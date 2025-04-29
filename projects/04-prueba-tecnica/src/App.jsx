@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import { getRamdomFact } from './services/facts.js'
 
-const CAT_ENDPOINT_FACT = 'https://catfact.ninja/fact'
 // const CAT_ENDPOINT_IMAGE_URL = `https://cataas.com/cat/says/${firsworld}?size=50&color=red&json=true`
 
 export function App () {
@@ -10,22 +10,7 @@ export function App () {
 
   // Para recuperar la cita al cargar la página
   useEffect(() => {
-    fetch(CAT_ENDPOINT_FACT)
-      .then(res => res.json())
-      .then(data => {
-        const { fact } = data
-        setFact(fact)
-
-        const threeFirstWords = fact.split(' ').slice(0, 3).join(' ')
-        console.log(threeFirstWords)
-
-        fetch(`https://cataas.com/cat/says/${threeFirstWords}?size=50&color=red&json=true`)
-          .then(res => res.json())
-          .then(response => {
-            const { url } = response
-            setImageURL(url)
-          })
-      })
+    getRamdomFact().then(newFact => setFact(newFact))
   }, [])
 
   // Para recuperar la imagen cada vez que cambia la cita
@@ -40,10 +25,16 @@ export function App () {
       })
   }, [fact])
 
+  const handleClick = async () => {
+    const newFact = await getRamdomFact(setFact)
+    setFact(newFact)
+  }
+
   return (
 
     <main>
       <h1>App de Gatitos</h1>
+      <button onClick={handleClick}>Get new fact</button>
       <section>
         {fact && <p>{fact}</p>}
         {imageURL && <img src={imageURL} alt={`Image extraxted using the first three words for ${fact}`} />}
