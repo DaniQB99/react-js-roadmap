@@ -7,4 +7,3 @@ export const getRamdomFact = async () => {
   return fact
 }
 
-fetch(CAT_ENDPOINT_FACT) 
